@@ -2,21 +2,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# just regular layers from unet
+# just regular unet-like layers
 
-class Down(nn.Module): # maybe should be implemented as functions too?
-    def __init__(self, in_channels, out_channels, normalize=True, dropout=None):
-        super().__init__()
-        layers = [nn.Conv2d(in_channels, out_channels, kernel_size=4, stride=2, padding=1, bias=False)]
-        if normalize:
-            layers += [nn.InstanceNorm2d(out_channels, affine=True)]
-        layers += [nn.LeakyReLU(0.2)]
-        if dropout:
-            layers += [nn.Dropout(dropout)]
-        self.model = nn.Sequential(*layers)
-
-    def forward(self, x):
-        return self.model(x)
+def Down(in_channels, out_channels, normalize=True, dropout=None):
+    layers = [nn.Conv2d(in_channels, out_channels, kernel_size=4, stride=2, padding=1, bias=False)]
+    if normalize:
+        layers += [nn.InstanceNorm2d(out_channels, affine=True)]
+    layers += [nn.LeakyReLU(0.2)]
+    if dropout:
+        layers += [nn.Dropout(dropout)]
+    return nn.Sequential(*layers)
 
 def Up(in_channels, out_channels, dropout=None):
     layers = [nn.ConvTranspose2d(in_channels, out_channels, kernel_size=4, stride=2, padding=1, bias=False),
@@ -38,7 +33,7 @@ def Generator(channels=3):
         Up(256, 128),
         Up(128, 64),
         nn.ConvTranspose2d(64, channels, kernel_size=4, stride=2, padding=1),
-        nn.Sigmoid() # Tanh?
+        nn.Sigmoid()
     )
 
 def Discriminator(channels=3):
