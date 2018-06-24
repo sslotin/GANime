@@ -15,6 +15,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+# TODO: it's pytorch 0.4, use device instead of cuda
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=0,
@@ -32,7 +33,7 @@ opt = parser.parse_args()
 
 cycle_loss = torch.nn.L1Loss()
 
-lambda_adv = 3
+lambda_adv = 2 # tweaking this param is very important
 lambda_cycle = 10
 lambda_gp = 10
 
@@ -49,7 +50,7 @@ if opt.epoch != 0:
 
 
 dataloader_A = DataLoader(FacesDataset, batch_size=opt.batch_size, shuffle=True)
-dataloader_B = DataLoader(FacesDataset, batch_size=opt.batch_size, shuffle=True)
+dataloader_B = DataLoader(AnimeDataset, batch_size=opt.batch_size, shuffle=True)
 optim_G = torch.optim.Adam(itertools.chain(G_A.parameters(), G_B.parameters()))
 optim_D_A = torch.optim.Adam(D_A.parameters())
 optim_D_B = torch.optim.Adam(D_B.parameters())
