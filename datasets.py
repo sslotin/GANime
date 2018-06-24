@@ -4,6 +4,8 @@ from PIL import Image
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
 
+# maybe wrap default ImageFolder instead
+
 class ImageDataset(Dataset):
     def __init__(self, root):
         self.files = glob.glob(root + '/*/*.jpg')
